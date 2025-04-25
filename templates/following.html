@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ user.username }}following</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: #fafafa;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #f8f9f9;
+            padding: 16px 32px;
+            border-bottom: 1px solid #dbdbdb;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        header h1 {
+            font-size: 1.4rem;
+            color: black;
+            margin-bottom: 10px;
+        }
+
+        header nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        header a {
+            color: #00376b;
+            text-decoration: none;
+            font-size: 1rem;
+        }
+
+        section#following {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 70vh;
+            text-align: center;
+        }
+
+        .follow-card {
+            background-color: white;
+            border: 1px solid #dbdbdb;
+            border-radius: 12px;
+            padding: 16px 24px;
+            margin: 10px;
+            width: 300px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .follow-card strong {
+            font-size: 1.1rem;
+            color: black;
+            display: block;
+        }
+
+        .follow-card span {
+            font-size: 0.95rem;
+            color: black;
+        }
+
+        @media (max-width: 600px) {
+            .follow-card {
+                width: 90%;
+            }
+
+            header nav {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Following Users</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/profile">Profile</a>
+            <a href="/followers">Followers</a>
+        </nav>
+    </header>
+
+    <section id="following">
+        {% if following %}
+            {% for followee in following %}
+                <div class="follow-card">
+                    <strong>{{ followee.username }}</strong>
+                    <span>{{ followee.email }}</span>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p style="color: black;">You're not following anyone yet.</p>
+        {% endif %}
+    </section>
+</body>
+</html>

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ profile.email }}'s Profile</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: #ffffff;
+            color: black;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #f8f9f9;
+            padding: 16px 32px;
+            border-bottom: 1px solid #dbdbdb;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+            margin: 0 0 10px;
+        }
+
+        nav a {
+            text-decoration: none;
+            margin: 0 12px;
+            color: #00376b;
+            font-weight: 500;
+        }
+
+        section {
+            max-width: 300px;
+            margin: 2rem auto;
+            padding: 0 20px;
+        }
+
+        h2 {
+            font-size: 1.3rem;
+            border-bottom: 1px solid #dbdbdb;
+            padding-bottom: 8px;
+            margin-bottom: 16px;
+        }
+
+        .profile-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .stats {
+            display: flex;
+            gap: 20px;
+            font-size: 1rem;
+        }
+
+        .stats p {
+            margin: 0;
+        }
+
+        .follow-form, .unfollow-form {
+            margin-top: 10px;
+        }
+
+        .follow-form button,
+        .unfollow-form button {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .follow-form button {
+            background-color: #0095f6;
+            color: white;
+            border: none;
+        }
+
+        .unfollow-form button {
+            background-color: blue;
+            color: white;
+            border: none;
+        }
+
+        .post {
+            background-color: white;
+            border: 1px solid #dbdbdb;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .post img {
+            border-radius: 8px;
+            margin-bottom: 10px;
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+        }
+
+        .comments {
+            margin-top: 10px;
+        }
+
+        .comments h3 {
+            font-size: 1.1rem;
+            margin-bottom: 6px;
+        }
+
+        .comment-form textarea {
+            width: 100%;
+            resize: vertical;
+            min-height: 60px;
+            margin-top: 8px;
+            padding: 8px;
+            font-family: inherit;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        .comment-form button {
+            margin-top: 8px;
+            background-color: #0095f6;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 300;
+            cursor: pointer;
+        }
+
+        footer {
+            text-align: center;
+            margin: 2rem 0;
+            color: #999;
+        }
+
+        @media (max-width: 600px) {
+            .profile-info {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .stats {
+                flex-direction: column;
+            }
+
+            section {
+                padding: 0 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>{{ profile.email }}'s Profile</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/profile">My Profile</a>
+        </nav>
+    </header>
+
+    <section>
+        <h2>Profile Information</h2>
+        <p><strong>Email:</strong> {{ profile.email }}</p>
+        
+        <!-- Followers and Following stats side by side -->
+        <div class="stats">
+            <p><strong>Followers:</strong> {{ followers_count }}</p>
+            <p><strong>Following:</strong> {{ following_count }}</p>
+        </div>
+
+        {% if current_user.user_id == profile.id %}
+            <p><em>This is your profile.</em></p>
+        {% else %}
+            {% if not is_following %}
+                <form action="/follow_user/{{ profile.id }}" method="post" class="follow-form">
+                    <button type="submit">Follow</button>
+                </form>
+            {% else %}
+                <form action="/unfollow_user/{{ profile.id }}" method="post" class="unfollow-form">
+                    <button type="submit">Unfollow</button>
+                </form>
+            {% endif %}
+        {% endif %}
+    </section>
+
+    <section>
+        {% if posts %}
+            {% for post in posts %}
+                <div class="post">
+                    {% if post.image_url %}
+                        <img src="{{ post.image_url | replace('\\', '/') }}" alt="Post Image" class="post-image">
+                    {% else %}
+                        <p><em>No image available for this post.</em></p>
+                    {% endif %}
+                    <p><strong>Caption:</strong> {{ post.caption }}</p>
+                    
+                    <!-- Display formatted date -->
+                    <p><strong>Posted on:</strong> {{ post.formatted_date }}</p>
+
+                    <!-- Comments Section -->
+                    <div class="comments">
+                        <h3>Comments</h3>
+                        {% if post.comments %}
+                            <ul>
+                                {% for comment in post.comments[:5] %}
+                                    <li><strong>{{ comment.username }}:</strong> {{ comment.text }} 
+                                        </li>
+                                {% endfor %}
+                            </ul>
+                            
+                            {% if post.comments|length > 5 %}
+                                <button onclick="document.getElementById('extra-comments-{{ post.id }}').style.display='block'">See all comments</button>
+                                <div id="extra-comments-{{ post.id }}" style="display:none;">
+                                    <ul>
+                                        {% for comment in post.comments[5:] %}
+                                            <li><strong>{{ comment.username }}:</strong> {{ comment.text }} 
+                                                <em>Posted on: {{ comment.comment_date }}</em></li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endif %}
+                        {% else %}
+                            <p>No comments yet.</p>
+                        {% endif %}
+                        
+                        <!-- Comment Form -->
+                        <form action="/add_comment/{{ post.id }}" method="post" class="comment-form">
+                            <input type="hidden" name="profile_id" value="{{ profile.id }}">
+                            <textarea name="comment" placeholder="Add a comment (max 200 characters)" maxlength="200" required></textarea>
+                            <button type="submit">Post Comment</button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No posts to display.</p>
+        {% endif %}
+    </section>
+
+    <footer>
+        <p>&copy; 2025 YourSiteName. All rights reserved.</p>
+    </footer>
+</body>
+
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="icon" href="/static/favicon.ico" />
+    <script type="module" src="/static/firebase-login1.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 2rem;
+            background-color: #f7f7f7; /* Optional background color */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        #login-box {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 350px;
+        }
+        h2 {
+            text-align: center;
+            font-size: 1.6rem;
+            margin-bottom: 1.5rem;
+            color: #333;
+        }
+        input, button {
+            width: 100%;
+            margin-top: 0.5rem;
+            padding: 0.75rem;
+            font-size: 1rem;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            box-sizing: border-box; /* Ensures padding doesn't affect width */
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        p {
+            text-align: center;
+            margin-top: 1rem;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        #sign-out {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="login-box">
+        <h2>Login</h2>
+        <input type="email" id="email" placeholder="Email" required><br>
+        <input type="password" id="password" placeholder="Password" required><br>
+        <button id="login">Login</button>
+        <p>Don't have an account? <a href="/register">Register</a></p>
+    </div>
+    <button id="sign-out" hidden>Logout</button>
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Post</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #f8f9f9;
+            padding: 16px 32px;
+            border-bottom: 1px solid #dbdbdb;
+            display: flex;
+            justify-content: center; /* Center the content */
+            align-items: center;
+        }
+
+        header h1 {
+            font-size: 1.4rem;
+            color: #262626;
+            margin: 0;
+            flex-grow: 1; /* Ensure it takes up available space */
+        }
+
+        nav {
+            display: flex;
+            gap: 20px; /* Space between the links */
+        }
+
+        nav a {
+            color: #00376b;
+            text-decoration: none;
+            font-size: 1rem;
+        }
+
+        section#post-form {
+            max-width: 500px;
+            margin: 2rem auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        form div {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #262626;
+        }
+
+        input[type="file"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #dbdbdb;
+            border-radius: 8px;
+            font-size: 1rem;
+            background-color: #fff;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        button[type="submit"] {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #0095f6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #007ac9;
+        }
+
+        .alert {
+            margin: 20px 0;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        .alert-success {
+            background-color: #daf7dc;
+            color: #28a745;
+        }
+
+        .alert-error {
+            background-color: #f8d7da;
+            color: #dc3545;
+        }
+
+        @media (max-width: 600px) {
+            section#post-form {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Create a New Post</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/profile">My Profile</a>
+        </nav>
+    </header>
+
+    <section id="post-form">
+        <form action="/posts/create" method="post" enctype="multipart/form-data">
+            <div>
+                <label for="image">Upload Image</label>
+                <input type="file" name="image" accept="image/png, image/jpeg" required>
+            </div>
+            <div>
+                <label for="caption">Caption</label>
+                <textarea name="caption" rows="4" placeholder="Write a caption..." required></textarea>
+            </div>
+            <button type="submit">Post</button>
+        </form>
+    </section>
+
+    <div id="status-message"></div>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const status = urlParams.get('status');
+            const msg = urlParams.get('msg');
+
+            if (status === 'success') {
+                showAlert("Post created successfully!", "success");
+            } else if (status === 'error') {
+                showAlert("Failed to create post: " + (msg || "Unknown error."), "error");
+            }
+        });
+
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.textContent = message;
+            document.getElementById('status-message').appendChild(alertDiv);
+        }
+    </script>
+</body>
+</html>

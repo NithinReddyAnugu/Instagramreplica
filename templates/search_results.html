@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Results for {{ query }}</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: #fafafa;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #f8f9f9;
+            padding: 16px 32px;
+            border-bottom: 1px solid #dbdbdb;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        header h1 {
+            font-size: 1.4rem;
+            color: black;
+            margin-bottom: 10px;
+        }
+
+        header nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        header a {
+            color: #00376b;
+            text-decoration: none;
+            font-size: 1rem;
+        }
+
+        .search-results {
+            max-width: 600px;
+            margin: 2rem auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .user-card {
+            background-color: white;
+            border: 1px solid #dbdbdb;
+            border-radius: 12px;
+            padding: 16px 24px;
+            margin: 10px 0;
+            width: 100%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .user-card a {
+            color: black;
+            text-decoration: none;
+            margin: 4px 0;
+            font-size: 1rem;
+        }
+
+        .user-card button {
+            margin-top: 8px;
+            background-color: #0095f6;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .user-card button:hover {
+            background-color: #007ac1;
+        }
+
+        p {
+            color: black;
+        }
+
+        @media (max-width: 600px) {
+            .user-card {
+                width: 90%;
+            }
+
+            header nav {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Search Result</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/profile">My Profile</a>
+        </nav>
+    </header>
+
+    <section class="search-results">
+        {% if search_results %}
+            {% for user in search_results %}
+                <div class="user-card">
+                    <a href="/profile/{{ user.id }}">{{ user.username }}</a>
+                    <a href="/profile/{{ user.id }}">{{ user.email }}</a>
+                    {% if not user.is_following %}
+                        <form action="/follow_user/{{ user.id }}" method="post">
+                            <button type="submit">Follow</button>
+                        </form>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No users found.</p>
+        {% endif %}
+    </section>
+</body>
+</html>
